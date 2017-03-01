@@ -167,14 +167,14 @@ class agent:
 LEFT = 0
 RIGHT = 1
 
-blob = agent(4,[LEFT,RIGHT],greediness=0.05, greedDecay=0.00)
-env = gym.make('CartPole-v0')
-env = wrappers.Monitor(env, '/tmp/cartpole-experiment')
+blob = agent(4,[LEFT,RIGHT],greediness=0.05)
+env = gym.make('CartPole-v1')
+env = wrappers.Monitor(env, '/tmp/cartpole-experiment-v1')
 
 t = 0
 epLen = deque([],100)
 
-for i_episode in range(1000):
+for i_episode in range(700):
     
     S = env.reset()
     done = False   
@@ -195,8 +195,16 @@ for i_episode in range(1000):
     blob.reflect()
 
     # when the episode ends the agent will have hit a terminal state so give it a zero reward
-    blob.observe(np.copy(S),A,0.,None)
-    
+    if t < 500:
+        blob.observe(np.copy(S),A,0.,None)
+    else:
+        blob.observe(np.copy(S),A,1.,None)
+            
     epLen.append(t)
     
     print("episode: {}, average: {}".format(i_episode,np.mean(epLen)))
+
+env.close()
+#%%
+
+gym.upload('/tmp/cartpole-experiment-v1', api_key='MY_API_KEY')
