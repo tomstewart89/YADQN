@@ -5,11 +5,13 @@ import numpy as np
 from agent import agent
 
 LEFT = 0
-RIGHT = 1
-MAX_TIMESTEPS = 500
+STOP = 1
+RIGHT = 2
 
-blob = agent(4,[LEFT,RIGHT], epsilon=0.05)
-env = gym.make('CartPole-v1')
+MAX_TIMESTEPS = 200
+
+blob = agent(2,[LEFT,STOP,RIGHT], epsilon=0.5)
+env = gym.make('MountainCar-v0')
 
 #env = wrappers.Monitor(env, '/tmp/cartpole-experiment-v1')
 
@@ -37,9 +39,9 @@ for i_episode in range(10000):
         
     # when the episode ends the agent will have hit a terminal state so give it a zero reward
     if t < MAX_TIMESTEPS:
-        blob.observe(S,A,0.,None)
-    else:
         blob.observe(S,A,1.,None)
+    else:
+        blob.observe(S,A,0.,None)
             
     episodeLength.append(t)
     

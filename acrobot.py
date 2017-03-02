@@ -5,13 +5,15 @@ import numpy as np
 from agent import agent
 
 LEFT = 0
-RIGHT = 1
+STOP = 1
+RIGHT = 2
+
 MAX_TIMESTEPS = 500
 
-blob = agent(4,[LEFT,RIGHT], epsilon=0.05)
-env = gym.make('CartPole-v1')
+blob = agent(6,[LEFT,STOP,RIGHT], epsilon=0.05)
+env = gym.make('Acrobot-v1')
 
-#env = wrappers.Monitor(env, '/tmp/cartpole-experiment-v1')
+env = wrappers.Monitor(env, '/tmp/acrobot-experiment-v1')
 
 t = 0
 episodeLength = deque([],100)
@@ -37,9 +39,9 @@ for i_episode in range(10000):
         
     # when the episode ends the agent will have hit a terminal state so give it a zero reward
     if t < MAX_TIMESTEPS:
-        blob.observe(S,A,0.,None)
-    else:
         blob.observe(S,A,1.,None)
+    else:
+        blob.observe(S,A,0.,None)
             
     episodeLength.append(t)
     
@@ -47,4 +49,6 @@ for i_episode in range(10000):
 
 env.close() 
 
-#gym.upload('/tmp/cartpole-experiment-v1', api_key='MY_API_KEY')
+#%%
+
+gym.upload('/tmp/acrobot-experiment-v1', api_key='MY_API_KEY')
